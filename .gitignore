@@ -1,0 +1,7 @@
+# Ignore CSV outputs
+data/out.csv
+data/out_small.csv
+
+# Ignore Python cache files
+*.pyc
+__pycache__/
