@@ -17,7 +17,7 @@ plt.ylabel('Quantity Sold')
 plt.title('Monthly Sales')
 plt.tight_layout()
 
-chartPathMonthlySales = 'data\MonthlySales_chart.png'
+chartPathMonthlySales = 'data\Charts\MonthlySales_chart.png'
 plt.savefig(chartPathMonthlySales)
 plt.close(fig)
 #plt.show()
@@ -27,24 +27,7 @@ monthly_sales_df['InvoiceDate'] = monthly_sales_df['InvoiceDate'].dt.strftime('%
 
 monthly_sales_df.columns = ['Invoice Date', 'Quantity']
 # Add Ranking column starting at 1
-monthly_sales_df.insert(0, 'Ranking', range(1, len(monthly_sales_df)+1))
-
-#formatted columns
-with pd.ExcelWriter('data/MonthlySales.xlsx', engine='xlsxwriter') as writer:
-    monthly_sales_df.to_excel(writer, index=False, sheet_name='Sales')    
-    workbook  = writer.book
-    worksheet = writer.sheets['Sales']
-    
-    number_format = workbook.add_format({'num_format': '#,##0'})
-    worksheet.set_column('C:C', None, number_format)
-    worksheet.autofit()    
-   
-    # Insert chart in worksheet
-    worksheet.insert_image('E2', chartPathMonthlySales, {'x_scale': 1.00, 'y_scale': 1.00})
-
-
-
-
+#monthly_sales_df.insert(0, 'Ranking', range(1, len(monthly_sales_df)+1))
 
 # Calculate total quantity sold per product
 top_products = retailData.groupby('Description')['Quantity'].sum().sort_values(ascending=False).head(10)
@@ -63,7 +46,7 @@ ax.yaxis.grid(True, linestyle='--', linewidth=1, color='gray')
 
 plt.tight_layout()
 
-chartPathTotalQuantity = 'data\TopTenProductsSold_chart.png'
+chartPathTotalQuantity = 'data\Charts\TopTenProductsSold_chart.png'
 plt.savefig(chartPathTotalQuantity)
 plt.close(fig)
 
@@ -72,21 +55,6 @@ top_products_df = top_products.reset_index()
 top_products_df.columns = ['Description', 'Quantity']
 # Add Ranking column starting at 1
 top_products_df.insert(0, 'Ranking', range(1, len(top_products_df)+1))
-
-#formatted columns
-with pd.ExcelWriter('data/TopTenProductsSold.xlsx', engine='xlsxwriter') as writer:
-    top_products_df.to_excel(writer, index=False, sheet_name='Top Ten')    
-    workbook  = writer.book
-    worksheet = writer.sheets['Top Ten']
-    
-    number_format = workbook.add_format({'num_format': '#,##0'})
-    worksheet.set_column('C:C', None, number_format)
-    worksheet.autofit()    
-   
-    # Insert chart in worksheet
-    worksheet.insert_image('E2', chartPathTotalQuantity, {'x_scale': 1.00, 'y_scale': 1.00})
-
-
 
 # Calculate total quantity sold per customers
 top_customers = retailData.groupby('Customer ID')['Quantity'].sum().nlargest(10)
@@ -105,7 +73,7 @@ ax.yaxis.grid(True, linestyle='--', linewidth=1, color='gray')
 
 plt.tight_layout()
 #plt.show()
-chartPathTopTen = 'data\TopTenCustomers_chart.png'
+chartPathTopTen = 'data\Charts\TopTenCustomers_chart.png'
 plt.savefig(chartPathTopTen)
 plt.close(fig)
 
@@ -118,7 +86,7 @@ top_customers_df.insert(0, 'Ranking', range(1, len(top_customers_df)+1))
 #top_customers_df.to_excel('data/TopTenCustomers.xlsx', index=False)
 
 #formatted columns
-with pd.ExcelWriter('data/TopTenCustomers.xlsx', engine='xlsxwriter') as writer:
+with pd.ExcelWriter('data/RetailAnalysis.xlsx', engine='xlsxwriter') as writer:
     top_customers_df.to_excel(writer, index=False, sheet_name='Top Customers')    
     workbook  = writer.book
     worksheet = writer.sheets['Top Customers']
@@ -129,3 +97,23 @@ with pd.ExcelWriter('data/TopTenCustomers.xlsx', engine='xlsxwriter') as writer:
    
     # Insert chart in worksheet
     worksheet.insert_image('E2', chartPathTopTen, {'x_scale': 0.75, 'y_scale': 0.75})
+
+    monthly_sales_df.to_excel(writer, index=False, sheet_name='Sales Trends')
+    worksheet = writer.sheets['Sales Trends']
+    
+    number_format = workbook.add_format({'num_format': '#,##0'})
+    worksheet.set_column('B:B', None, number_format)
+    worksheet.autofit()    
+   
+    # Insert chart in worksheet
+    worksheet.insert_image('E2', chartPathMonthlySales, {'x_scale': 1.00, 'y_scale': 1.00})
+
+    top_products_df.to_excel(writer, index=False, sheet_name='Top Ten Products')
+    worksheet = writer.sheets['Top Ten Products']
+        
+    number_format = workbook.add_format({'num_format': '#,##0'})
+    worksheet.set_column('C:C', None, number_format)
+    worksheet.autofit()    
+    
+    # Insert chart in worksheet
+    worksheet.insert_image('E2', chartPathTotalQuantity, {'x_scale': 1.00, 'y_scale': 1.00})
