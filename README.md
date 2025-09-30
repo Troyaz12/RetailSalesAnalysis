@@ -23,12 +23,23 @@ Country      Country the customer resides in
 
 ## Key Insights
 
-## 1. Top Customers
+## 1. Top Customers Gross Sales by Quantity
+- Shows top ten customers total purchased items, ignoring cancelations and returns.
+- Helps to identify demand consentration across the customer base.
+- The top ten cusomers accounted for 17% of the gross sales for the time period.
+- The single largest customer contributed 3% to gross sales alone.
 
+## 2. Top Products Gross Sales by Quantity
+- Shows top ten products sold, ignoring cancelations and returns.
+- Useful for understanding product popularity.
+- The top ten products accounted for 6% of sales by product.
+- The largest product by gross sales accounted for 1% of sales alone.
 
-## 2. Top Products
-
-## 3. Sales Trends Over Time
-
+## 3. Gross Sales Trends Over Time by Quantity
+- Monthly sales trends, ignoring cancelations and returns.
+- Captures seasonality and demand spikes.
+- Sales spiked in September through October for both 2010 and 2011.
+- 2010 showed a steady performance with additional spikes in March and August.
+- 2011 saw weak sales in February, April, and December compared to the prior year.
 
 ## Methodology

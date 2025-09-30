@@ -17,8 +17,6 @@ retailData = pd.read_excel(path, sheet_name=None)
 cleaned_dfs = []
 
 for sheet_name, df in retailData.items():
- df.fillna(df.median(numeric_only=True), inplace=True)
-
  if 'Cusomer ID' in df.columns:
   df['Customer ID'] = df['Customer ID'].fillna('Unknown')
  if 'Description' in df.columns:
@@ -30,10 +28,22 @@ for sheet_name, df in retailData.items():
  cleaned_dfs.append(df)
 
  combined_df = pd.concat(cleaned_dfs, ignore_index=True)
+
+ # Drop rows with missing Quantity or Price after combining
+ combined_df.dropna(subset=['Quantity', 'Price'], inplace=True)
+
  combined_df["InvoiceYear"] = combined_df["InvoiceDate"].dt.year
  combined_df["InvoiceMonth"] = combined_df["InvoiceDate"].dt.month
  combined_df["InvoiceWeekday"] = combined_df["InvoiceDate"].dt.day_name()
  combined_df["InvoiceHour"] = combined_df["InvoiceDate"].dt.hour
+
+ combined_df['Quantity'] = pd.to_numeric(combined_df['Quantity'], errors='coerce')
+ combined_df['Price'] = pd.to_numeric(combined_df['Price'], errors='coerce')
+ combined_df.dropna(subset=['Quantity','Price'], inplace=True)
+
+ combined_df['Revenue'] = combined_df['Quantity'] * combined_df['Price']
+ 
+
 
  combined_df.to_csv('data/out.csv', index=False)
 

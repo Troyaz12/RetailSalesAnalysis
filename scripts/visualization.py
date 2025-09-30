@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FuncFormatter
 
 path = r"C:\Users\Troy\OneDrive\Desktop\python\datasets\Online Retail\data\out.csv"
 retailData = pd.read_csv(path)
@@ -26,8 +27,6 @@ monthly_sales_df = monthly_sales.reset_index()
 monthly_sales_df['InvoiceDate'] = monthly_sales_df['InvoiceDate'].dt.strftime('%Y-%m-%d')
 
 monthly_sales_df.columns = ['Invoice Date', 'Quantity']
-# Add Ranking column starting at 1
-#monthly_sales_df.insert(0, 'Ranking', range(1, len(monthly_sales_df)+1))
 
 # Calculate total quantity sold per product
 top_products = retailData.groupby('Description')['Quantity'].sum().sort_values(ascending=False).head(10)
@@ -82,8 +81,35 @@ top_customers_df.columns = ['Customer ID', 'Total Quantity Sold']
 # Add Ranking column starting at 1
 top_customers_df.insert(0, 'Ranking', range(1, len(top_customers_df)+1))
 
-#Not formatted
-#top_customers_df.to_excel('data/TopTenCustomers.xlsx', index=False)
+#### Revenue
+salesRevenue = retailData
+
+
+monthly_sales = salesRevenue.resample('ME', on='InvoiceDate')['Revenue'].sum()
+
+ax = monthly_sales.plot(kind='bar', figsize=(12,6))
+fig = ax.get_figure()
+ax.set_xticklabels([d.strftime('%b %Y') for d in monthly_sales.index], rotation=45, ha='right')
+
+ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'${x:,.0f}'))
+
+plt.ylabel('Revenue ($)')
+plt.title('Monthly Sales')
+plt.tight_layout()
+
+chartPathMonthlySales = 'data\Charts\MonthlySalesRevenue_chart.png'
+plt.savefig(chartPathMonthlySales)
+plt.close(fig)
+#plt.show()
+
+monthly_sales_df = monthly_sales.reset_index()
+monthly_sales_df['InvoiceDate'] = monthly_sales_df['InvoiceDate'].dt.strftime('%Y-%m-%d')
+
+monthly_sales_df.columns = ['Invoice Date', 'Quantity']
+
+
+
+
 
 #formatted columns
 with pd.ExcelWriter('data/RetailAnalysis.xlsx', engine='xlsxwriter') as writer:
@@ -117,3 +143,6 @@ with pd.ExcelWriter('data/RetailAnalysis.xlsx', engine='xlsxwriter') as writer:
     
     # Insert chart in worksheet
     worksheet.insert_image('E2', chartPathTotalQuantity, {'x_scale': 1.00, 'y_scale': 1.00})
+
+
+
