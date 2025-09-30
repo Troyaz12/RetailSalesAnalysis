@@ -15,7 +15,7 @@ fig = ax.get_figure()
 ax.set_xticklabels([d.strftime('%b %Y') for d in monthly_sales.index], rotation=45, ha='right')
 
 plt.ylabel('Quantity Sold')
-plt.title('Monthly Sales')
+plt.title('Monthly Sales (Quantity)')
 plt.tight_layout()
 
 chartPathMonthlySales = 'data\Charts\MonthlySales_chart.png'
@@ -91,7 +91,7 @@ ax.set_xticklabels([d.strftime('%b %Y') for d in monthly_revenue.index], rotatio
 ax.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f'${x:,.0f}'))
 
 plt.ylabel('Revenue ($)')
-plt.title('Monthly Sales')
+plt.title('Monthly Sales (Revenue)')
 plt.tight_layout()
 
 chartPathMonthlyRevenue = 'data\Charts\MonthlySalesRevenue_chart.png'
@@ -115,7 +115,7 @@ top_products_Revenue.plot(kind='bar', ax=ax)
 # Rotate labels and set title
 ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
 ax.set_ylabel('Total Revenue')
-ax.set_title('Top 10 Products by Revenue')
+ax.set_title('Top 10 Products by Revenue ($)')
 
 # Add horizontal grid lines aligned with y-ticks
 ax.yaxis.grid(True, linestyle='--', linewidth=1, color='gray')
@@ -142,14 +142,14 @@ top_customers_ByRevenue.plot(kind='bar', ax=ax)
 # Rotate labels and set title
 ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
 ax.set_ylabel('Total Revenue')
-ax.set_title('Top 10 Customers by Revenue')
+ax.set_title('Top 10 Customers by Revenue ($)')
 
 # Add horizontal grid lines aligned with y-ticks
 ax.yaxis.grid(True, linestyle='--', linewidth=1, color='gray')
 
 plt.tight_layout()
 #plt.show()
-chartPathTopCustomerRevenue = 'data\Charts\TopTenCustomers_chart.png'
+chartPathTopCustomerRevenue = 'data\Charts\TopTenCustomersByRevenue_chart.png'
 plt.savefig(chartPathTopCustomerRevenue)
 plt.close(fig)
 
@@ -158,15 +158,11 @@ top_customers_ByRevenue_df.columns = ['Customer ID', 'Total Revenue']
 # Add Ranking column starting at 1
 top_customers_ByRevenue_df.insert(0, 'Ranking', range(1, len(top_customers_ByRevenue_df)+1))
 
-
-
-
-
 #formatted columns
 with pd.ExcelWriter('data/RetailAnalysis.xlsx', engine='xlsxwriter') as writer:
-    top_customers_df.to_excel(writer, index=False, sheet_name='Top Customers')    
+    top_customers_df.to_excel(writer, index=False, sheet_name='Top Customers By Quantity')    
     workbook  = writer.book
-    worksheet = writer.sheets['Top Customers']
+    worksheet = writer.sheets['Top Customers By Quantity']
     
     number_format = workbook.add_format({'num_format': '#,##0'})
     worksheet.set_column('C:C', None, number_format)
@@ -175,8 +171,8 @@ with pd.ExcelWriter('data/RetailAnalysis.xlsx', engine='xlsxwriter') as writer:
     # Insert chart in worksheet
     worksheet.insert_image('E2', chartPathTopTen, {'x_scale': 0.75, 'y_scale': 0.75})
 
-    monthly_sales_df.to_excel(writer, index=False, sheet_name='Sales Trends')
-    worksheet = writer.sheets['Sales Trends']
+    monthly_sales_df.to_excel(writer, index=False, sheet_name='Sales Trends By Quantity')
+    worksheet = writer.sheets['Sales Trends By Quantity']
     
     number_format = workbook.add_format({'num_format': '#,##0'})
     worksheet.set_column('B:B', None, number_format)
@@ -185,8 +181,8 @@ with pd.ExcelWriter('data/RetailAnalysis.xlsx', engine='xlsxwriter') as writer:
     # Insert chart in worksheet
     worksheet.insert_image('E2', chartPathMonthlySales, {'x_scale': 1.00, 'y_scale': 1.00})
 
-    top_products_df.to_excel(writer, index=False, sheet_name='Top Ten Products')
-    worksheet = writer.sheets['Top Ten Products']
+    top_products_df.to_excel(writer, index=False, sheet_name='Top Ten Products By Quantity')
+    worksheet = writer.sheets['Top Ten Products By Quantity']
         
     number_format = workbook.add_format({'num_format': '#,##0'})
     worksheet.set_column('C:C', None, number_format)
@@ -199,7 +195,7 @@ with pd.ExcelWriter('data/RetailAnalysis.xlsx', engine='xlsxwriter') as writer:
     monthly_Revenue_df.to_excel(writer, index=False, sheet_name='Sales Revenue Trend')
     worksheet = writer.sheets['Sales Revenue Trend']
     
-    number_format = workbook.add_format({'num_format': '#,##0'})
+    number_format = workbook.add_format({'num_format': '$#,##0'})
     worksheet.set_column('B:B', None, number_format)
     worksheet.autofit()    
    
@@ -210,7 +206,7 @@ with pd.ExcelWriter('data/RetailAnalysis.xlsx', engine='xlsxwriter') as writer:
     top_products_Revenue_df.to_excel(writer, index=False, sheet_name='Top Ten Products By Revenue')
     worksheet = writer.sheets['Top Ten Products By Revenue']
         
-    number_format = workbook.add_format({'num_format': '#,##0'})
+    number_format = workbook.add_format({'num_format': '$#,##0'})
     worksheet.set_column('C:C', None, number_format)
     worksheet.autofit()    
     
@@ -221,7 +217,7 @@ with pd.ExcelWriter('data/RetailAnalysis.xlsx', engine='xlsxwriter') as writer:
     top_customers_ByRevenue_df.to_excel(writer, index=False, sheet_name='Top Ten Customers By Revenue')
     worksheet = writer.sheets['Top Ten Customers By Revenue']
         
-    number_format = workbook.add_format({'num_format': '#,##0'})
+    number_format = workbook.add_format({'num_format': '$#,##0'})
     worksheet.set_column('C:C', None, number_format)
     worksheet.autofit()    
     
